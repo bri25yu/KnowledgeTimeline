@@ -11,13 +11,24 @@ class GroupAdmin(admin.ModelAdmin):
 
 @admin.register(Node)
 class NodeAdmin(admin.ModelAdmin):
-    fields = list_display = (
+    fields = search_fields = (
+        "link",
+        "group",
+        "title",
+        "year",
+        "month",
+        "authors",
+        "summary",
+        "description",
+    )
+
+    list_display = (
         "summary",
         "year",
         "month",
         "authors",
         "group",
         "title",
-        "description",
-        "link",
     )
+
+    list_filter = ("group",)

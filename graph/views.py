@@ -3,7 +3,7 @@ from collections import Counter
 
 from django.shortcuts import render
 
-from graph.models import Node
+from graph.models import Group, Node
 
 
 X_EM_PER_PAPER = 17
@@ -12,7 +12,15 @@ HORIZONTAL_ORDERING = [-1, 1, -2, 2, -3, 3]
 
 
 def index(request):
-    years = set(Node.objects.values_list("year", flat=True))
+    groups_query = request.GET.get("groups", "")
+    if groups_query:
+        group_ids = map(lambda s: int(s[5:]), groups_query.split(","))
+    else:
+        group_ids = list(Group.objects.values_list("id", flat=True))
+
+    node_db_objects = Node.objects.filter(group__id__in=group_ids)
+
+    years = set(node_db_objects.values_list("year", flat=True))
     year_start, year_end = int(min(years)) - 1, int(max(years)) + 1
     year_to_ypos = {
         y: (y - year_start) * Y_EM_PER_YEAR
@@ -27,7 +35,7 @@ def index(request):
 
     seen_years = Counter()
     nodes = []
-    for node in Node.objects.all():
+    for node in node_db_objects:
         x_pos = HORIZONTAL_ORDERING[seen_years[node.year]]
         seen_years[node.year] += 1
         nodes.append((
@@ -40,9 +48,15 @@ def index(request):
             node,
         ))
 
+    groups = [
+        {"id": f"group{g.id}", "color": g.color, "name": g.name}
+        for g in Group.objects.all()
+    ]
+
     context = {
         "nodes": nodes,
         "timeline_height": timeline_height,
         "years": years,
+        "groups": groups,
     }
     return render(request, "graph/index.html", context)
