@@ -1,0 +1,140 @@
+<title>
+    {% block title %}
+        Graph
+    {% endblock %}
+</title>
+
+{% block header %}
+    <style>
+
+        .container {
+            width: 100%;
+            height: calc(100% - 4.75em);
+            margin: 0;
+            margin-top: 1em;
+            overflow: scroll;
+            position: relative;
+        }
+
+        .vertical-line {
+            border-left: 0.5em solid green;
+            height: {{ timeline_height }}em;
+            position: absolute;
+        }
+
+        .heading {
+            font-size: 3em;
+            font-weight: 300;
+            text-align: center;
+            margin: auto;
+            height: 1.25em;
+        }
+
+        .year {
+            left: calc(50% - 5em);
+            width: 10em;
+            position: absolute;
+            text-align: center;
+            font-size: 1.5em;
+        }
+
+        .node {
+            padding: 0.5em;
+            border: 0.1em solid gray;
+            border-radius: 0.2em;
+            width: 15em;
+            height: 6em;
+            position: absolute;
+            align-items : center;
+            display : flex;
+            color: white;
+        }
+
+        {% for info, node in nodes %}
+            #{{ info.id }} {
+                top: {{ info.y_pos }}em;
+                {% if info.x_pos < 0 %}
+                    left: calc(50% - 5em + {{ info.x_pos }}em);
+                {% else %}
+                    right: calc(50% - 5em - {{ info.x_pos }}em);
+                {% endif %}
+                background-color: {{ node.group.color }};
+            }
+
+            #{{ info.id }} .node-full {
+                display: none;
+            }
+
+            #{{ info.id }}:hover .node-summary {
+                display: none;
+            }
+
+            #{{ info.id }}:hover .node-full {
+                display: block;
+            }
+
+            #{{ info.id }}:hover {
+                width: 25em;
+                height: 20em;
+                {% if info.x_pos < 0 %}
+                    left: calc(50% - 5em + {{ info.x_pos }}em - 5em);
+                {% else %}
+                    right: calc(50% - 5em - {{ info.x_pos }}em - 5em);
+                {% endif %}
+                top: calc({{ info.y_pos }}em - 7em);
+                transition-property: width, height, left, top, background-color, color;
+                transition-duration: 0.5s;
+                transition-timing-function: ease;
+                background-color: honeydew;
+                color: black;
+                z-index: 10;
+            }
+        {% endfor %}
+
+        .node-summary {
+
+        }
+
+        .node-full {
+
+        }
+
+    </style>
+{% endblock %}
+
+{% block heading %}
+    <div class="heading">Ling146 Knowledge Timeline</div>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="vertical-line" style="left: calc(50% + 5em);"></div>
+        <div class="vertical-line" style="right: calc(50% + 5em);"></div>
+
+        {% for year in years %}
+            <span class="year" style="top: calc({{ year.y_pos }}rem + 3rem);">{{ year.value }}</span>
+        {% endfor %}
+
+        {% for info, node in nodes %}
+            <div class="node" id="{{ info.id }}">
+                <div class="node-summary">
+                    {{ node.summary }}
+                </div>
+                <div class="node-full">
+                    <div style="font-weight: bold;">
+                        {{ node.title }}
+                    </div>
+                    {{ node.authors }}. {{ info.month }} {{ node.year }}
+                    <br><br>
+                    {{ node.description }}
+                    <br><br>
+                    <a href="{{ node.link }}" target="_blank">
+                        <div style="text-align: center;">
+                            link
+                        </div>
+                    </a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
