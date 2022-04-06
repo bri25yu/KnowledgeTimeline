@@ -16,12 +16,6 @@
             position: relative;
         }
 
-        .vertical-line {
-            border-left: 0.5em solid green;
-            height: {{ timeline_height }}em;
-            position: absolute;
-        }
-
         .heading {
             font-size: 3em;
             font-weight: 300;
@@ -174,13 +168,6 @@
 
 {% block content %}
     <div class="container">
-        <div class="vertical-line" style="left: calc(50% + 5em);"></div>
-        <div class="vertical-line" style="right: calc(50% + 5em);"></div>
-
-        {% for year in years %}
-            <span class="year" style="top: calc({{ year.y_pos }}rem + 3rem);">{{ year.value }}</span>
-        {% endfor %}
-
         {% for info, node in nodes %}
             <div class="node" id="{{ info.id }}">
                 <div class="node-summary">
