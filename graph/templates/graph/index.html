@@ -33,54 +33,44 @@
         }
 
         .node {
+            position: relative;
             padding: 0.5em;
             border: 0.1em solid gray;
             border-radius: 0.2em;
             width: 15em;
             height: 6em;
-            position: absolute;
             align-items : center;
             display : flex;
             color: white;
+            left: calc(50% - 7.5em);
         }
 
-        {% for info, node in nodes %}
-            #{{ info.id }} {
-                top: {{ info.y_pos }}em;
-                {% if info.x_pos < 0 %}
-                    left: calc(50% - 5em + {{ info.x_pos }}em);
-                {% else %}
-                    right: calc(50% - 5em - {{ info.x_pos }}em);
-                {% endif %}
+        {% for node in nodes %}
+            #node{{ node.id }} {
                 background-color: {{ node.group.color }};
             }
 
-            #{{ info.id }} .node-full {
+            #node{{ node.id }} .node-full {
                 display: none;
             }
 
-            #{{ info.id }}:hover .node-summary {
+            #node{{ node.id }}:hover .node-summary {
                 display: none;
             }
 
-            #{{ info.id }}:hover .node-full {
+            #node{{ node.id }}:hover .node-full {
                 display: block;
             }
 
-            #{{ info.id }}:hover {
+            #node{{ node.id }}:hover {
                 width: 25em;
                 height: 20em;
-                {% if info.x_pos < 0 %}
-                    left: calc(50% - 5em + {{ info.x_pos }}em - 5em);
-                {% else %}
-                    right: calc(50% - 5em - {{ info.x_pos }}em - 5em);
-                {% endif %}
-                top: calc({{ info.y_pos }}em - 7em);
-                transition-property: width, height, left, top, background-color, color;
-                transition-duration: 0.5s;
-                transition-timing-function: ease;
                 background-color: honeydew;
                 color: black;
+                left: calc(50% - 12.5em);
+                transition-property: width, height, background-color, color, left;
+                transition-duration: 0.5s;
+                transition-timing-function: ease;
                 z-index: 10;
             }
         {% endfor %}
@@ -168,8 +158,8 @@
 
 {% block content %}
     <div class="container">
-        {% for info, node in nodes %}
-            <div class="node" id="{{ info.id }}">
+        {% for node in nodes %}
+            <div class="node" id="node{{ node.id }}">
                 <div class="node-summary">
                     {{ node.summary }}
                 </div>
@@ -177,7 +167,7 @@
                     <div style="font-weight: bold;">
                         {{ node.title }}
                     </div>
-                    {{ node.authors }}. {{ info.month }} {{ node.year }}
+                    {{ node.authors }}. {{ node.month }} {{ node.year }}
                     <br><br>
                     <div style="overflow-y: scroll; max-height: 10em;">
                         {{ node.description }}
@@ -190,6 +180,7 @@
                     </a>
                 </div>
             </div>
+            <br>
         {% endfor %}
     </div>
 
