@@ -192,7 +192,9 @@
                     </div>
                     {{ node.authors }}. {{ info.month }} {{ node.year }}
                     <br><br>
-                    {{ node.description }}
+                    <div style="overflow-y: scroll; max-height: 10em;">
+                        {{ node.description }}
+                    </div>
                     <br><br>
                     <a href="{{ node.link }}" target="_blank">
                         <div style="text-align: center;">
